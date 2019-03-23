@@ -32,10 +32,13 @@ if [ "$ac_adapter" = "on" ]; then
 			$launcher &
 		fi
 	else
-		killall $command
+		if [ -n "$list" ]; then
+			killall $command
+		fi
 	fi
 else
 	if [ -n "$list" ]; then
 		killall $command
 	fi
 fi
+
