@@ -24,9 +24,10 @@ maxCPU=$(echo "$maxCPU * $threads" | bc)
 list=$(ps -ae | grep $command)
 ac_adapter=$(acpi -a | cut -d' ' -f3 | cut -d- -f1)
 usage=$(getCPUusage)
+hasPower=$(echo "$usage <= $maxCPU" | bc)
 
 if [ "$ac_adapter" = "on" ]; then
-	if [ $(echo "$usage <= $maxCPU" | bc) == "1" ]; then
+	if [ "$hasPower" == "1" ]; then
 		if [ -z "$list" ]; then
 			$launcher &
 		fi
