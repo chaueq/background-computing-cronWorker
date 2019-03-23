@@ -27,7 +27,7 @@ usage=$(getCPUusage)
 hasPower=$(echo "$usage <= $maxCPU" | bc)
 
 if [ "$ac_adapter" = "on" ]; then
-	if [ "$hasPower" == "1" ]; then
+	if [ "$hasPower" = "1" ]; then
 		if [ -z "$list" ]; then
 			$launcher &
 		fi
