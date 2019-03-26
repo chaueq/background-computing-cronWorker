@@ -1,6 +1,7 @@
 #!/bin/bash
 command="xmr-stak"
 launcher="mine-xmr"
+logFile="/opt/xmr-stak/log.txt"
 maxCPU="40" #maximum percentage of ALL computing power used by other programs
 
 function getCPUusage()
@@ -29,7 +30,7 @@ hasPower=$(echo "$usage <= $maxCPU" | bc)
 if [ "$ac_adapter" = "on" ]; then
 	if [ "$hasPower" = "1" ]; then
 		if [ -z "$list" ]; then
-			$launcher &
+			$launcher > $logFile &
 		fi
 	else
 		if [ -n "$list" ]; then
