@@ -3,6 +3,7 @@ command="xmr-stak"
 launcher="mine-xmr"
 logFile="/opt/xmr-stak/log.txt"
 maxCPU="40" #maximum percentage of ALL computing power used by other programs
+maxLogSize="10485760" #in bytes | 10MB by default
 
 function getCPUusage()
 {
@@ -43,3 +44,11 @@ else
 	fi
 fi
 
+logLen=$(ls -l $logFile | cut -d' ' -f5)
+notEnoughSpace=$(echo "$logLen > $maxLogSize" | bc)
+
+if [ "$notEnoughSpace" = "1" ]; then
+	logContext=$(tail $logFile)	
+	rm $logFile
+	echo "$logContext" > $logFile
+fi
