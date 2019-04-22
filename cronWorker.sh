@@ -4,6 +4,7 @@ launcher="mine-xmr"
 logFile="/opt/xmr-stak/log.txt"
 maxCPU="40" #maximum percentage of ALL computing power used by other programs
 maxLogSize="10485760" #in bytes | 10MB by default
+switchFile="/opt/xmr-stak/mine.switch"
 
 function getCPUusage()
 {
@@ -27,11 +28,18 @@ list=$(ps -ae | grep $command)
 ac_adapter=$(acpi -a | cut -d' ' -f3 | cut -d- -f1)
 usage=$(getCPUusage)
 hasPower=$(echo "$usage <= $maxCPU" | bc)
+switchState=$(cat $switchFile)
 
 if [ "$ac_adapter" = "on" ]; then
 	if [ "$hasPower" = "1" ]; then
-		if [ -z "$list" ]; then
-			$launcher > $logFile &
+		if [ "$switchState" = "1" ]; then
+			if [ -z "$list" ]; then
+				$launcher > $logFile &
+			fi
+		else
+			if [ -n "$list" ]; then
+				killall $command
+			fi
 		fi
 	else
 		if [ -n "$list" ]; then
@@ -52,3 +60,4 @@ if [ "$notEnoughSpace" = "1" ]; then
 	rm $logFile
 	echo "$logContext" > $logFile
 fi
+
